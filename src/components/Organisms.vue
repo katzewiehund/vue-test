@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data () {
     return {
@@ -33,8 +34,21 @@ export default {
       max_results: 3
     }
   },
+  created () {
+    console.log('created')
+    this.getOrganismList()
+  },
   props: ['selected_product_id'],
   methods: {
+    getOrganismList: function () {
+      axios.get('http://jsonplaceholder.typicode.com/todos')
+        .then((response) => {
+          this.organism_list = []
+          response.data.forEach(function (d) {
+            this.organism_list.push({ name: d.title, value: d.id })
+          }, this)
+        })
+    },
     inputChanged: function () {
       let lower_input = this.organism_input.toLowerCase()
       if (lower_input.length > 0) {
