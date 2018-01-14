@@ -11,7 +11,7 @@
     <li
        v-for="organism in filtered_organism_list"
        :key="organism.value"
-       @click="selectOrganism(organism.value)"
+       @click="selectOrganism(organism.value, organism.name)"
        >
       {{ organism.name }}
     </li>
@@ -37,21 +37,26 @@ export default {
   methods: {
     inputChanged: function () {
       let lower_input = this.organism_input.toLowerCase()
-      console.log('Input changed')
-      console.log(lower_input)
-      console.log(this.organism_input)
-      let number_results = 0
-      this.filtered_organism_list = []
-      this.organism_list.forEach(function (organism) {
-        if (organism.name.toLowerCase().includes(lower_input)) {
-          if (number_results < this.max_results) {
-            this.filtered_organism_list.push(organism)
-            number_results += 1
+      if (lower_input.length > 0) {
+        let number_results = 0
+        this.filtered_organism_list = []
+        this.organism_list.forEach(function (organism) {
+          if (organism.name.toLowerCase().includes(lower_input)) {
+            if (number_results < this.max_results) {
+              this.filtered_organism_list.push(organism)
+              number_results += 1
+            }
           }
-        }
-      }, this)
+        }, this)
+      } else {
+        this.filtered_organism_list = []
+        this.selected_organism_id = ''
+        this.$emit('organismChanged', '')
+      }
     },
-    selectOrganism: function (organism) {
+    selectOrganism: function (organism, name) {
+      this.organism_input = name
+      this.filtered_organism_list = []
       this.selected_organism_id = organism
       this.$emit('organismChanged', organism)
     }
